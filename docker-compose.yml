@@ -1,0 +1,85 @@
+# Adopt version 2 syntax:
+#   https://docs.docker.com/compose/compose-file/#/versioning
+version: '2'
+
+volumes:
+    database_data2:
+        driver: local
+
+services:
+###########################
+# Setup the Apache container
+###########################
+    httpd:
+        container_name: dockerapache_httpd
+        restart: always
+        image: httpd:2.4.25
+        ports:
+            - 8080:80
+        volumes:
+            - ./docker/apache/httpd.conf:/usr/local/apache2/conf/httpd.conf
+            - ./docker/apache/vhosts/:/usr/local/apache2/conf/vhosts
+        volumes_from:
+            - php
+
+###########################
+# Setup the PHP container
+###########################
+    php:
+        container_name: dockerapache_php
+        restart: always
+        build: ./docker/php/
+        expose:
+            - 9000
+        volumes:
+            - ./www/:/usr/local/apache2/htdocs
+            - ./docker/php/ssmtp.conf:/etc/ssmtp/ssmtp.conf:ro
+            - ./docker/php/php-mail.conf:/usr/local/etc/php/conf.d/mail.ini:ro
+###########################
+# Setup the Wordpress container
+###########################
+    wordpress:
+        container_name: dockerapache_wordpress
+        image: wordpress:latest
+        ports:
+            - 3000:80
+        environment:
+            - WORDPRESS_DB_HOST=mysql
+            - WORDPRESS_DB_USER=project
+            - WORDPRESS_DB_PASSWORD=project
+            - WORDPRESS_DB_NAME=project
+        volumes:
+            - ./www/wordpress:/var/www/html
+            - ./www/wordpress/wp-content:/var/www/html/wp-content
+        links:
+            - mysql:mysql
+###########################
+# Setup the Database (MySQL) container
+###########################
+    mysql:
+        container_name: dockerapache_mysql
+        restart: always
+        image: mysql:5.6.36
+        expose:
+            - 3306
+        volumes:
+            - database_data2:/var/lib/mysql
+            - ./docker/mysql/conf-mysql.cnf:/etc/mysql/mysql.conf.d/conf-mysql.cnf:ro
+        environment:
+            MYSQL_ROOT_PASSWORD: secret
+            MYSQL_DATABASE: project
+            MYSQL_USER: project
+            MYSQL_PASSWORD: project
+###########################
+# Setup the Database (PHPMYADMIN) container
+###########################
+    phpmyadmin:
+        image: phpmyadmin/phpmyadmin:latest
+        environment:
+            PMA_HOST: mysql
+        ports:
+          - 8081:80
+        # depends_on:
+        #   - mysql
+        links:
+          - mysql:mysql
