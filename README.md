@@ -32,4 +32,13 @@ This Docker configuration install all you need for a functional wordpress site (
 ###########################
 ```
 - Create new Apache configuration of new wordpress site in /apache/vhosts/wordpress.conf
-- Start Docker : docker-compose up -d
+- Docker Start : docker-compose up -d
+
+ - The localhost will be available at: localhost:8080 (port can be changed in docker-compose.yml)
+ - The wordpress site : localhost:3000 (port can be changed in docker-compose.yml)
+ - PHPMyadmin : localhost:8081 (port can be changed in docker-compose.yml)
+
+- Usefuls Docker commands: 
+ - docker-compose up/down (Start/Stop docker env)
+ - docker-compose rm -v (remove all running docker)
+ - docker-compose ps (list all running docker)
