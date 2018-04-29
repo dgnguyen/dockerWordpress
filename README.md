@@ -1,4 +1,6 @@
-Docker WordPress
+**Docker WordPress**
+
+This Docker configuration install all you need for a functional wordpress site (Apache, PHP, MysqL, PHPMyadmin, Wordpress latest)
 
 1- Useful links :
  - https://lindev.fr/index.php?post/2017/06/06/Environnement-de-d%C3%A9veloppement-complet-avec-Docker
