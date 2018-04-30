@@ -1,4 +1,4 @@
-FROM php:7.1.5-fpm
+FROM php:5.6-fpm
 
 # install the PHP extensions we need
 RUN set -ex; \
@@ -14,10 +14,9 @@ RUN set -ex; \
 	\
 	docker-php-ext-configure gd --with-png-dir=/usr --with-jpeg-dir=/usr; \
 	docker-php-ext-install gd mysqli opcache pdo_mysql json mcrypt; \
-        pecl install -o -f xdebug redis \
+        pecl install -o -f redis \
         && rm -rf /tmp/pear \
-        && echo "extension=redis.so" > /usr/local/etc/php/conf.d/redis.ini \
-        && echo "zend_extension=/usr/local/lib/php/extensions/no-debug-non-zts-20131226/xdebug.so" > /usr/local/etc/php/conf.d/xdebug.ini;
+        && echo "extension=redis.so" > /usr/local/etc/php/conf.d/redis.ini;
 # TODO consider removing the *-dev deps and only keeping the necessary lib* packages
 
 # set recommended PHP.ini settings
@@ -31,10 +30,6 @@ RUN { \
 		echo 'opcache.enable_cli=1'; \
 	} > /usr/local/etc/php/conf.d/opcache-recommended.ini
 
-RUN { \
-                echo '[xdebug]'; \
-                echo 'xdebug.default_enable = 0'; \
-        } >> /usr/local/etc/php/conf.d/xdebug.ini
 
 
 RUN { \
