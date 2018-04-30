@@ -44,3 +44,5 @@ This Docker configuration install all you need for a functional wordpress site (
   - ```docker-compose up/down``` (Start/Stop docker env)
   - ```docker-compose rm -v``` (remove all running docker)
   - ```docker-compose ps``` (list all running docker)
+
+Warning : Sometimes, an error like "Bind for 0.0.0.0:XX failed: port is already allocated" will show up while we running docker-compose up. That mean that the port has been taken and docker can't run container on it. Restarting docker will resolve this error
