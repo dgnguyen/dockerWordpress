@@ -8,6 +8,20 @@ volumes:
 
 services:
 ###########################
+# Setup the Apache container
+###########################
+    httpd:
+        container_name: dockerapache_httpd
+        restart: always
+        image: httpd:2.4.25
+        ports:
+            - 8080:80
+        volumes:
+            - ./docker/apache/httpd.conf:/usr/local/apache2/conf/httpd.conf
+            - ./docker/apache/vhosts/:/usr/local/apache2/conf/vhosts
+        volumes_from:
+            - wordpress
+###########################
 # Setup the Wordpress container
 ###########################
     wordpress:
@@ -24,6 +38,7 @@ services:
         # volumes:
         #     - ./docker/wp/www/wordpress/wp-content:/usr/src/wordpress/wp-content
         volumes:
+            - ./docker/www/:/usr/local/apache2/htdocs
             - ./docker/www/wordpress:/var/www/html
             - ./docker/www/wordpress/wp-content:/var/www/html/wp-content
         links:
